@@ -16,13 +16,16 @@ use std::io::{self, Read, Write};
 use std::os::unix::io::{AsRawFd, RawFd};
 use std::sync::Arc;
 
-use crate::platform::posix::Fd;
 use libc;
 
+use crate::platform::posix::Fd;
+
 /// Read-only end for a file descriptor.
+#[derive(Clone)]
 pub struct Reader(pub(crate) Arc<Fd>);
 
 /// Write-only end for a file descriptor.
+#[derive(Clone)]
 pub struct Writer(pub(crate) Arc<Fd>);
 
 impl Read for Reader {
