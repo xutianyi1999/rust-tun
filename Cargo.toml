@@ -23,7 +23,7 @@ byteorder = { version = "1", optional = true }
 futures-core = { version = "0.3", optional = true }
 
 [target.'cfg(any(target_os = "linux", target_os = "macos"))'.dependencies]
-ioctl = { version = "0.6", package = "ioctl-sys" }
+ioctl = { version = "0.7", package = "ioctl-sys" }
 
 [dev-dependencies]
 packet = "0.1"
