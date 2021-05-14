@@ -78,10 +78,10 @@ impl Device {
 
             req.ifru.flags = device_type
                 | if config.platform.packet_information {
-                    0
-                } else {
-                    IFF_NO_PI
-                }
+                0
+            } else {
+                IFF_NO_PI
+            }
                 | if queues_num > 1 { IFF_MULTI_QUEUE } else { 0 };
 
             for _ in 0..queues_num {
@@ -170,9 +170,10 @@ impl Device {
         self.queues[0].set_nonblock()
     }
 
-    pub fn split(&self) -> (posix::Reader, posix::Writer) {
-        let fd = &self.queues[0];
-        let fd = Arc::new(fd.tun.clone());
+    pub fn split(self) -> (posix::Reader, posix::Writer) {
+        let mut queues = self.queues;
+        let fd = queues.remove(0);
+        let fd = Arc::new(fd.tun);
         (posix::Reader(fd.clone()), posix::Writer(fd.clone()))
     }
 }

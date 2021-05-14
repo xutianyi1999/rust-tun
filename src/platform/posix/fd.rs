@@ -20,7 +20,6 @@ use libc::{self, F_SETFL, fcntl, O_NONBLOCK};
 use crate::error::*;
 
 /// POSIX file descriptor support for `io` traits.
-#[derive(Clone)]
 pub struct Fd(pub RawFd);
 
 impl Fd {
