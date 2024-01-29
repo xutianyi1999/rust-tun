@@ -37,6 +37,32 @@ impl Fd {
             _ => Err(io::Error::last_os_error()),
         }
     }
+
+    /// Receive packet from device
+    pub fn recv(&self, buf: &mut [u8]) -> io::Result<usize> {
+        unsafe {
+            let amount = libc::read(self.0, buf.as_mut_ptr() as *mut _, buf.len());
+
+            if amount < 0 {
+                return Err(io::Error::last_os_error());
+            }
+
+            Ok(amount as usize)
+        }
+    }
+
+    /// Send packets to device
+    pub fn send(&self, buf: &[u8]) -> io::Result<usize> {
+        unsafe {
+            let amount = libc::write(self.0, buf.as_ptr() as *const _, buf.len());
+
+            if amount < 0 {
+                return Err(io::Error::last_os_error());
+            }
+
+            Ok(amount as usize)
+        }
+    }
 }
 
 impl Read for Fd {

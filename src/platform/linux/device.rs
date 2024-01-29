@@ -173,6 +173,16 @@ impl Device {
     pub fn set_nonblock(&self) -> io::Result<()> {
         self.queues[0].set_nonblock()
     }
+
+    /// Receive packet from device
+    pub fn recv(&self, buf: &mut [u8]) -> io::Result<usize> {
+        self.queues[0].recv(buf)
+    }
+
+    /// Send packets to device
+    pub fn send(&self, buf: &[u8]) -> io::Result<usize> {
+        self.queues[0].send(buf)
+    }
 }
 
 impl Read for Device {
@@ -409,6 +419,14 @@ impl Queue {
 
     pub fn set_nonblock(&self) -> io::Result<()> {
         self.tun.set_nonblock()
+    }
+
+    pub fn recv(&self, buf: &mut [u8]) -> io::Result<usize> {
+        self.tun.recv(buf)
+    }
+
+    pub fn send(&self, buf: &[u8]) -> io::Result<usize> {
+        self.tun.send(buf)
     }
 }
 
