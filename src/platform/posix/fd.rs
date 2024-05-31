@@ -139,6 +139,8 @@ impl IntoRawFd for Fd {
     }
 }
 
+// todo On Android fd should be closed externally
+#[cfg(not(target_os = "android"))]
 impl Drop for Fd {
     fn drop(&mut self) {
         unsafe {
