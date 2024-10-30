@@ -26,6 +26,12 @@ use crate::error::*;
 #[derive(Copy, Clone, Default, Debug)]
 pub struct Configuration {
     pub(crate) packet_information: bool,
+
+    /// Enable IFF_NAPI
+    pub(crate) napi: bool,
+
+    /// Enable IFF_VNET_HDR
+    pub(crate) vnet_hdr: bool,
 }
 
 impl Configuration {
@@ -33,6 +39,19 @@ impl Configuration {
     /// each packet is a header with flags and protocol type.
     pub fn packet_information(&mut self, value: bool) -> &mut Self {
         self.packet_information = value;
+        self
+    }
+
+
+    /// Enable / Disable IFF_NAPI flag.
+    pub fn napi(&mut self, value: bool) -> &mut Self {
+        self.napi = value;
+        self
+    }
+
+    /// Enable / Disable IFF_VNET_HDR flag.
+    pub fn vnet_hdr(&mut self, value: bool) -> &mut Self {
+        self.vnet_hdr = value;
         self
     }
 }

@@ -12,10 +12,7 @@
 //
 //  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-use libc::{
-    self, c_char, c_short, ifreq, AF_INET, IFF_MULTI_QUEUE, IFF_NO_PI, IFF_RUNNING, IFF_TAP,
-    IFF_TUN, IFF_UP, IFNAMSIZ, O_RDWR, SOCK_DGRAM,
-};
+use libc::{self, c_char, c_short, ifreq, AF_INET, IFF_MULTI_QUEUE, IFF_NAPI, IFF_NO_PI, IFF_RUNNING, IFF_TAP, IFF_TUN, IFF_UP, IFF_VNET_HDR, IFNAMSIZ, O_RDWR, SOCK_DGRAM};
 use std::{
     ffi::{CStr, CString},
     io::{self, Read, Write},
@@ -81,9 +78,15 @@ impl Device {
 
             let iff_no_pi = IFF_NO_PI as c_short;
             let iff_multi_queue = IFF_MULTI_QUEUE as c_short;
+            let iff_napi = IFF_NAPI as c_short;
+            let iff_vnet_hdr = IFF_VNET_HDR as c_short;
             let packet_information = config.platform.packet_information;
+            let napi = config.platform.napi;
+            let vnet_hdr = config.platform.vnet_hdr;
             req.ifr_ifru.ifru_flags = device_type
                 | if packet_information { 0 } else { iff_no_pi }
+                | if napi { iff_napi } else { 0 }
+                | if vnet_hdr { iff_vnet_hdr } else { 0 }
                 | if queues_num > 1 { iff_multi_queue } else { 0 };
 
             for _ in 0..queues_num {

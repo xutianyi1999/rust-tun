@@ -24,6 +24,7 @@ enum PacketProtocol {
     #[default]
     IPv4,
     IPv6,
+    #[allow(unused)]
     Other(u8),
 }
 
