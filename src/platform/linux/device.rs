@@ -174,17 +174,24 @@ impl Device {
 
     /// Set non-blocking mode
     pub fn set_nonblock(&self) -> io::Result<()> {
-        self.queues[0].set_nonblock()
+        for queue in &self.queues {
+            queue.set_nonblock()?;
+        }
+        Ok(())
     }
 
     /// Receive packet from device
     pub fn recv(&self, buf: &mut [u8]) -> io::Result<usize> {
-        self.queues[0].recv(buf)
+        let tid = std::thread::current().id().as_u64().get();
+        let i = tid % self.queues.len() as u64;
+        self.queues[i as usize].recv(buf)
     }
 
     /// Send packets to device
     pub fn send(&self, buf: &[u8]) -> io::Result<usize> {
-        self.queues[0].send(buf)
+        let tid = std::thread::current().id().as_u64().get();
+        let i = tid % self.queues.len() as u64;
+        self.queues[i as usize].send(buf)
     }
 }
 
