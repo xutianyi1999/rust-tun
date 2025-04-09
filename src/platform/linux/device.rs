@@ -36,7 +36,7 @@ use crate::{
 pub struct Device {
     name: String,
     queues: Vec<Queue>,
-    ctl: Fd,
+    ctl: Arc<Fd>,
 }
 
 impl Device {
@@ -108,12 +108,23 @@ impl Device {
             let name = CStr::from_ptr(req.ifr_name.as_ptr())
                 .to_string_lossy()
                 .to_string();
-            Device { name, queues, ctl }
+            Device { name, queues, ctl: Arc::new(ctl) }
         };
 
         device.configure(config)?;
 
         Ok(device)
+    }
+
+    pub fn split_one(&mut self) -> Self {
+        let mut queues = Vec::new();
+        queues.push(self.queues.pop().unwrap());
+
+        Device {
+            name: self.name.clone(),
+            queues,
+            ctl: self.ctl.clone(),
+        }
     }
 
     /// Prepare a new request.
